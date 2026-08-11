@@ -1,0 +1,283 @@
+diff --git a/python/cudf_polars/cudf_polars/engine/core.py b/python/cudf_polars/cudf_polars/engine/core.py
+index 1d92f25380..80359eab92 100644
+--- a/python/cudf_polars/cudf_polars/engine/core.py
++++ b/python/cudf_polars/cudf_polars/engine/core.py
+@@ -842,7 +842,6 @@ def drop_if_replicated(
+             df.column_names,
+             df.dtypes,
+             df.stream,
+-            num_rows=0,
+         )
+     return df
+ 
+diff --git a/python/cudf_polars/cudf_polars/streaming/actor_graph/groupby.py b/python/cudf_polars/cudf_polars/streaming/actor_graph/groupby.py
+index f0c4979fef..72673017b8 100644
+--- a/python/cudf_polars/cudf_polars/streaming/actor_graph/groupby.py
++++ b/python/cudf_polars/cudf_polars/streaming/actor_graph/groupby.py
+@@ -4,8 +4,9 @@
+ 
+ from __future__ import annotations
+ 
++import os
+ from dataclasses import dataclass
+-from typing import TYPE_CHECKING, Any
++from typing import TYPE_CHECKING, Any, Literal
+ 
+ import pylibcudf as plc
+ from cudf_streaming.channel_metadata import (
+@@ -58,6 +59,20 @@ if TYPE_CHECKING:
+     from cudf_polars.typing import Schema
+ 
+ 
++def _experimental_groupby_algo() -> Literal["tree", "shuffle"] | None:
++    algo = os.getenv("CUDF_POLARS__EXPERIMENTAL__GROUPBY_ALGO", "").lower()
++    if algo in ("", "dynamic"):
++        return None
++    if algo == "tree":
++        return "tree"
++    if algo == "shuffle":
++        return "shuffle"
++    raise ValueError(
++        "CUDF_POLARS__EXPERIMENTAL__GROUPBY_ALGO must be one of "
++        "'tree', 'shuffle', or 'dynamic'"
++    )
++
++
+ @dataclass
+ class DecomposedGroupBy:
+     """Holds decomposed GroupBy or Distinct operations for multi-phase aggregation."""
+@@ -518,6 +533,8 @@ async def _choose_strategy(
+     skip_global_comm: bool,  # noqa: FBT001
+     maintain_order: bool,  # noqa: FBT001
+     tracer: ActorTracer | None,
++    *,
++    force_shuffle: bool = False,
+ ) -> int:
+     """
+     Select the best algorithm for the given context and metadata.
+@@ -546,6 +563,9 @@ async def _choose_strategy(
+         Whether the operation should maintain input ordering semantics.
+     tracer
+         Optional tracer for runtime metrics.
++    force_shuffle
++        Whether to force a shuffle strategy while preserving dynamic output
++        sizing safeguards.
+ 
+     Returns
+     -------
+@@ -589,9 +609,12 @@ async def _choose_strategy(
+         ) // MAX_ROWS_PER_PARTITION
+ 
+     ideal_count = 1
+-    use_tree = maintain_order or (
+-        total_need_shuffle == 0
+-        and (skip_global_comm or total_estimated_rows < MAX_ROWS_PER_PARTITION)
++    use_tree = not force_shuffle and (
++        maintain_order
++        or (
++            total_need_shuffle == 0
++            and (skip_global_comm or total_estimated_rows < MAX_ROWS_PER_PARTITION)
++        )
+     )
+     if not use_tree:
+         ideal_count = max(
+@@ -602,16 +625,21 @@ async def _choose_strategy(
+     output_count = min(ideal_count, output_count_limit)
+     if not use_tree:
+         output_count = max(2, output_count, min_row_limit_count)
++        if force_shuffle:
++            output_count = max(output_count, output_count_limit)
+     if tracer is not None:
+-        tracer.decision = (
+-            "tree_local"
+-            if skip_global_comm and use_tree
+-            else "shuffle_local"
+-            if skip_global_comm
+-            else "tree_allgather"
+-            if use_tree
+-            else "shuffle"
+-        )
++        if force_shuffle:
++            tracer.decision = "experimental_shuffle"
++        else:
++            tracer.decision = (
++                "tree_local"
++                if skip_global_comm and use_tree
++                else "shuffle_local"
++                if skip_global_comm
++                else "tree_allgather"
++                if use_tree
++                else "shuffle"
++            )
+ 
+     return output_count
+ 
+@@ -666,6 +694,12 @@ async def groupby_actor(
+             keys=_key_indices(ir, ir.children[0].schema, concrete_prefix=True),
+         )
+         maintain_order = _maintain_order(ir)
++        experimental_algo = _experimental_groupby_algo()
++        if experimental_algo == "shuffle" and maintain_order:
++            raise ValueError(
++                "Cannot force shuffle groupby/distinct when maintain-order "
++                "semantics are required"
++            )
+         fully_partitioned = partitioning.is_strictly_partitioned()
+         fallback_case = (
+             # NOTE: This criteria means that we fell back
+@@ -708,25 +742,45 @@ async def groupby_actor(
+             ir_context,
+             ch_in,
+             target_partition_size,
+-            allow_early_exit=not maintain_order,
++            allow_early_exit=not maintain_order and experimental_algo != "tree",
+         )
+ 
+         skip_global_comm = metadata_in.duplicated or isinstance(
+             partitioning.inter_rank_scheme, HashScheme
+         )
+-        output_count = await _choose_strategy(
+-            context,
+-            comm,
+-            metadata_in.local_count,
+-            aggregated,
+-            chunks_received,
+-            input_drained,
+-            collective_ids,
+-            target_partition_size,
+-            skip_global_comm,
+-            maintain_order,
+-            tracer,
+-        )
++        if experimental_algo == "tree":
++            output_count = 1
++            if tracer is not None:
++                tracer.decision = "experimental_tree"
++        elif experimental_algo == "shuffle":
++            output_count = await _choose_strategy(
++                context,
++                comm,
++                metadata_in.local_count,
++                aggregated,
++                chunks_received,
++                input_drained,
++                collective_ids,
++                target_partition_size,
++                skip_global_comm,
++                maintain_order,
++                tracer,
++                force_shuffle=True,
++            )
++        else:
++            output_count = await _choose_strategy(
++                context,
++                comm,
++                metadata_in.local_count,
++                aggregated,
++                chunks_received,
++                input_drained,
++                collective_ids,
++                target_partition_size,
++                skip_global_comm,
++                maintain_order,
++                tracer,
++            )
+ 
+         if output_count == 1:
+             await _tree_reduce(
+diff --git a/python/cudf_polars/cudf_polars/streaming/actor_graph/join.py b/python/cudf_polars/cudf_polars/streaming/actor_graph/join.py
+index 46cb66a04f..4984fce0f2 100644
+--- a/python/cudf_polars/cudf_polars/streaming/actor_graph/join.py
++++ b/python/cudf_polars/cudf_polars/streaming/actor_graph/join.py
+@@ -4,6 +4,7 @@
+ 
+ from __future__ import annotations
+ 
++import os
+ from dataclasses import asdict, dataclass
+ from typing import TYPE_CHECKING, Any, Literal
+ 
+@@ -103,6 +104,40 @@ class JoinStrategy:
+     """The key expressions for the right side. Only used for shuffle joins."""
+ 
+ 
++def _experimental_join_algo() -> (
++    Literal["shuffle", "broadcast_left", "broadcast_right"] | None
++):
++    algo = os.getenv("CUDF_POLARS__EXPERIMENTAL__JOIN_ALGO", "").lower()
++    if algo in ("", "dynamic"):
++        return None
++    if algo == "shuffle":
++        return "shuffle"
++    if algo == "broadcast_left":
++        return "broadcast_left"
++    if algo == "broadcast_right":
++        return "broadcast_right"
++    raise ValueError(
++        "CUDF_POLARS__EXPERIMENTAL__JOIN_ALGO must be one of "
++        "'shuffle', 'broadcast_left', 'broadcast_right', or 'dynamic'"
++    )
++
++
++def _validate_experimental_broadcast_side(
++    ir: Join, side: Literal["left", "right"]
++) -> None:
++    join_type = ir.options[0]
++    allowed = (
++        join_type in ("Inner", "Right")
++        if side == "left"
++        else join_type in ("Inner", "Left", "Semi", "Anti")
++    )
++    if not allowed:
++        raise ValueError(
++            f"Cannot force broadcast_{side} for {join_type!r} join with "
++            "CUDF_POLARS__EXPERIMENTAL__JOIN_ALGO"
++        )
++
++
+ @dataclass(frozen=True)
+ class JoinPrefilterDecision:
+     """Decision for an optional join-key prefilter stage."""
+@@ -1247,6 +1282,42 @@ async def _choose_strategy(
+         keys=names_to_indices(ir.right_on, ir.children[1].schema, concrete_prefix=True),
+     )
+ 
++    experimental_algo = _experimental_join_algo()
++    if experimental_algo is not None:
++        left_sample = TableSizeStats(
++            chunks=ChunkStore(context),
++            total_chunks=left_metadata.local_count,
++        )
++        right_sample = TableSizeStats(
++            chunks=ChunkStore(context),
++            total_chunks=right_metadata.local_count,
++        )
++        if experimental_algo == "shuffle":
++            shuffle_modulus = max(
++                nranks,
++                left_metadata.local_count,
++                right_metadata.local_count,
++            )
++            strategy = _make_shuffle_strategy(
++                ir,
++                shuffle_modulus,
++                left_partitioning,
++                right_partitioning,
++                left_metadata,
++                right_metadata,
++            )
++            if tracer is not None:
++                tracer.decision = "experimental_shuffle"
++        else:
++            broadcast_side: Literal["left", "right"] = (
++                "left" if experimental_algo == "broadcast_left" else "right"
++            )
++            _validate_experimental_broadcast_side(ir, broadcast_side)
++            strategy = JoinStrategy(broadcast_side=broadcast_side)
++            if tracer is not None:
++                tracer.decision = f"experimental_broadcast_{broadcast_side}"
++        return left_sample, right_sample, strategy
++
+     hash_chunkwise = isinstance(
+         left_partitioning.inter_rank_scheme, HashScheme
+     ) and isinstance(right_partitioning.inter_rank_scheme, HashScheme)

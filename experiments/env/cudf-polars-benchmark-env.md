@@ -1,8 +1,8 @@
 # cudf-polars Benchmark Environment
 
 This runbook is for collecting paper microbenchmarks on a GPU system such as a
-B200 or H100 node. It assumes the paper repository and a RAPIDS/cudf checkout are
-available on the same machine.
+B200 or H100 node. It assumes this artifact repository and a RAPIDS/cudf
+checkout are available on the same machine.
 
 ## Required cudf Branch
 
@@ -15,6 +15,16 @@ git remote add upstream git@github.com:rapidsai/cudf.git
 git fetch origin
 git fetch upstream
 git checkout paper-dynamic-planning-overrides
+```
+
+If that branch is not accessible, clone RAPIDS/cudf, check out the recorded
+upstream commit, and apply the patch included with this artifact:
+
+```sh
+git clone https://github.com/rapidsai/cudf.git cudf
+cd cudf
+git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
+git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
 ```
 
 For the first B200 paper-cut runs, the local branch was:
@@ -64,12 +74,12 @@ PY
 
 The `cudf_polars.__file__` path should point into the selected cudf checkout.
 
-## Paper Repository Setup
+## Artifact Repository Setup
 
-From the paper repository root:
+From the artifact repository root:
 
 ```sh
-cd /path/to/sc26-workshop-gpu-polars
+cd /path/to/sc26-gpu-polars-artifact
 python -m experiments.scripts.run_microbenchmarks --list-cases
 ```
 
@@ -128,10 +138,10 @@ python -m experiments.scripts.summarize_microbenchmarks \
 
 ## Quick End-to-End Figure Validation
 
-Use this `medium` run to validate the full path from benchmarks to the rendered
-paper PDF. Prefer four GPUs when available because it also checks the multi-rank
-join path; use `CUDA_VISIBLE_DEVICES=0` only as a lighter sanity check. This is
-a wiring check, not final paper data.
+Use this `medium` run to validate the benchmark and plotting path. Prefer four
+GPUs when available because it also checks the multi-rank join path; use
+`CUDA_VISIBLE_DEVICES=0` only as a lighter sanity check. This is a wiring check,
+not final paper data.
 
 ```sh
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
@@ -156,8 +166,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
   --data-dir experiments/results/generated/fig5-v100-validation-ray4
 ```
 
-Generate the microbenchmark figures from those validation results and rebuild
-the paper:
+Generate the microbenchmark figures from those validation results:
 
 ```sh
 conda activate paper-env
@@ -167,16 +176,14 @@ python experiments/scripts/plot_microbenchmark_figure.py \
   --benchmark join \
   --output paper/figures/join-microbenchmark-results.pdf \
   --summary-output experiments/results/fig5-v100-validation-join-ray4.md \
-  --title "V100 validation, 4 GPUs"
+  --title "Medium validation, 4 GPUs"
 
 python experiments/scripts/plot_microbenchmark_figure.py \
   experiments/results/raw/fig5-v100-validation-groupby-ray4.jsonl \
   --benchmark groupby \
   --output paper/figures/groupby-microbenchmark-results.pdf \
   --summary-output experiments/results/fig5-v100-validation-groupby-ray4.md \
-  --title "V100 validation, 4 GPUs"
-
-make
+  --title "Medium validation, 4 GPUs"
 ```
 
 ## Paper-Large Sweep
@@ -195,14 +202,13 @@ GPU_LABEL=ray4 \
 TITLE="B200, 4 GPUs" \
 PYTHON=python \
 PLOT_PYTHON=/path/to/paper-env/bin/python \
-BUILD_PAPER=1 \
 experiments/scripts/run_paper_microbenchmarks.sh
 ```
 
 The script runs the join and groupby paper-large cases, includes the expected
-forced-failure runs, regenerates the join and groupby figure PDFs, and optionally
-rebuilds the paper. The commands below are the expanded form for debugging or
-running cases individually.
+forced-failure runs, and regenerates the join and groupby figure PDFs. The
+commands below are the expanded form for debugging or running cases
+individually.
 
 Join, broadcast-favored:
 
@@ -330,26 +336,5 @@ The script normalizes each case by the median dynamic runtime and marks forced
 strategies that only produced errors as `fail`. Use the Markdown summaries to
 check exact median times before copying numbers into the paper text.
 
-For a V100 preview using the rough local files currently available on `dgx14`:
-
-```sh
-python experiments/scripts/plot_microbenchmark_figure.py \
-  experiments/results/raw/join-broadcast-paper-large.jsonl \
-  experiments/results/raw/join-balanced-paper-large-dynamic-tps256m.jsonl \
-  experiments/results/raw/join-balanced-paper-large-shuffle-tps256m.jsonl \
-  --benchmark join \
-  --output experiments/results/join-microbenchmark-results-v100-preview.pdf \
-  --summary-output experiments/results/join-microbenchmark-results-v100-preview.md \
-  --title "V100 preview"
-
-python experiments/scripts/plot_microbenchmark_figure.py \
-  experiments/results/raw/groupby-paper-large-gpu.jsonl \
-  --benchmark groupby \
-  --output experiments/results/groupby-microbenchmark-results-v100-preview.pdf \
-  --summary-output experiments/results/groupby-microbenchmark-results-v100-preview.md \
-  --title "V100 preview"
-```
-
-Those V100 files are useful for local validation, but final paper numbers
-should come from one consistent B200 or H100 stack and should be regenerated from
-fresh raw JSONL files.
+Final paper numbers should come from one consistent B200 or H100 stack and
+should be regenerated from fresh raw JSONL files.

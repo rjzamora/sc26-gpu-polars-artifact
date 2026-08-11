@@ -1,12 +1,11 @@
 # Dynamic Planning Artifact
 
-This repository contains the sanitized artifact package for the PDSW 2026 paper
+This repository contains the artifact package for the PDSW 2026 paper
 "Dynamic Planning for Scalable Data Movement in Accelerated Query Engines."
 
-The artifact captures the scripts, configuration records, summarized results,
-and generated figures used for the paper evaluation. It intentionally does not
-include working notes, submission notes, LaTeX draft sources, generated input
-datasets, or exploratory local-machine outputs.
+This repository contains the scripts, configuration records, summarized results,
+and generated figures used for the paper evaluation. Generated input datasets
+and exploratory local-machine outputs are not included.
 
 ## Contents
 
@@ -14,6 +13,8 @@ datasets, or exploratory local-machine outputs.
 - `experiments/configs/paper-cut-b200.yaml`: hardware and software pin for the
   B200 paper-cut run.
 - `experiments/env/`: environment and software-stack runbooks.
+- `experiments/patches/`: patch for the cudf paper branch, provided as a
+  fallback if the recorded branch is not accessible.
 - `experiments/queries/tpch_q9_polars.py`: exact Polars LazyFrame expression
   used for the PDS-H Q9 case study.
 - `experiments/results/`: summarized paper results and Q9 decision metadata.
@@ -41,8 +42,21 @@ conda activate paper-env
 
 The benchmark environment is a RAPIDS/cudf development environment that can
 import `cudf`, `cudf_polars`, `rapidsmpf`, `ray`, and `polars`.
-Use the `paper-dynamic-planning-overrides` cudf branch recorded in
+Use the `paper-dynamic-planning-overrides` cudf branch and commit recorded in
 `experiments/env/software-stack.md`.
+
+If the recorded branch is not accessible, clone RAPIDS/cudf, check out the
+recorded upstream commit, and apply the included patch:
+
+```sh
+git clone https://github.com/rapidsai/cudf.git cudf
+cd cudf
+git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
+git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
+```
+
+Then create the RAPIDS/cudf development environment from the cudf checkout, as
+described in `experiments/env/cudf-polars-benchmark-env.md`.
 
 ## Quick Checks
 
