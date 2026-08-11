@@ -13,8 +13,8 @@ and exploratory local-machine outputs are not included.
 - `experiments/configs/paper-cut-b200.yaml`: hardware and software pin for the
   B200 paper-cut run.
 - `experiments/env/`: environment and software-stack runbooks.
-- `experiments/patches/`: patch for the cudf paper branch, provided as a
-  fallback if the recorded branch is not accessible.
+- `experiments/patches/`: patch containing the experiment-only cudf changes
+  used for the paper.
 - `experiments/queries/tpch_q9_polars.py`: exact Polars LazyFrame expression
   used for the PDS-H Q9 case study.
 - `experiments/results/`: summarized paper results and Q9 decision metadata.
@@ -24,9 +24,9 @@ and exploratory local-machine outputs are not included.
 
 The synthetic microbenchmark inputs are generated locally by
 `experiments/scripts/run_microbenchmarks.py`.
-The PDS-H Q9 inputs are generated locally from the TPC-H data generator and
-converted to the Parquet layout expected by the benchmark harness. These
-generated inputs are not redistributed with this artifact.
+The PDS-H Q9 inputs must be generated locally as scale-factor 1000 Parquet
+inputs in the layout expected by the benchmark harness. These generated inputs
+are not redistributed with this artifact.
 
 PDS-H is derived from TPC-H, but the reported case study is not an official
 audited TPC-H benchmark result.
@@ -42,11 +42,8 @@ conda activate paper-env
 
 The benchmark environment is a RAPIDS/cudf development environment that can
 import `cudf`, `cudf_polars`, `rapidsmpf`, `ray`, and `polars`.
-Use the `paper-dynamic-planning-overrides` cudf branch and commit recorded in
-`experiments/env/software-stack.md`.
-
-If the recorded branch is not accessible, clone RAPIDS/cudf, check out the
-recorded upstream commit, and apply the included patch:
+Clone RAPIDS/cudf, check out the recorded upstream commit, and apply the
+included patch:
 
 ```sh
 git clone https://github.com/rapidsai/cudf.git cudf
@@ -57,6 +54,10 @@ git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynam
 
 Then create the RAPIDS/cudf development environment from the cudf checkout, as
 described in `experiments/env/cudf-polars-benchmark-env.md`.
+The original paper runs were collected from the
+`paper-dynamic-planning-overrides` branch recorded in
+`experiments/env/software-stack.md`; that branch is provenance, while the patch
+is the reviewer-facing reproduction path.
 
 ## Quick Checks
 
@@ -99,7 +100,8 @@ PLOT_PYTHON=python \
 experiments/scripts/run_paper_microbenchmarks.sh
 ```
 
-The PDS-H Q9 sweep requires locally generated scale-factor 1000 Parquet inputs:
+The PDS-H Q9 sweep requires locally generated scale-factor 1000 Parquet inputs
+in the expected benchmark layout:
 
 ```sh
 DATA_DIR=/path/to/generated/pdsh/scale-1000 \

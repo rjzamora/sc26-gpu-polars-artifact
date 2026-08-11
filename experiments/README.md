@@ -13,8 +13,8 @@ The first synthetic benchmark harness is:
 - `scripts/plot_microbenchmark_figure.py`: generate the paper microbenchmark figure from one or more JSONL files.
 - `scripts/run_paper_microbenchmarks.sh`: run the paper-cut synthetic benchmark set and regenerate the join/groupby figures.
 
-Run these scripts from an environment with `polars`, `cudf-polars`, and the experimental strategy-override branch available. This is usually the RAPIDS/cudf development environment, not the minimal LaTeX `paper-env`.
-For paper runs, use the `paper-dynamic-planning-overrides` branch recorded in `env/software-stack.md`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/paper-cut-b200.yaml` for the initial B200 software-stack pin.
+Run these scripts from an environment with `polars`, `cudf-polars`, and the experiment-only strategy-override changes available. This is usually the RAPIDS/cudf development environment, not the minimal LaTeX `paper-env`.
+For paper runs, apply the cudf patch included under `experiments/patches/`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/paper-cut-b200.yaml` for the initial B200 software-stack pin.
 GPU runs use `--frontend spmd` by default, which falls back to a single-rank communicator when the script is not launched under `rrun`.
 Use `--frontend ray` to run through `cudf_polars.engine.ray.RayEngine`.
 The `cpu` strategy uses the Polars CPU streaming engine and ignores the GPU frontend setting.
@@ -93,7 +93,7 @@ python -m experiments.scripts.run_microbenchmarks \
 
 Once the cases look right, repeat with `--preset paper-large`. The `paper-large`
 preset uses 1B-row synthetic inputs for the main side of each benchmark. It is
-intended for final numbers on 1, 2, and 4 GPUs, not quick iteration.
+intended for final numbers on 1, 2, 4, and 8 GPUs, not quick iteration.
 
 ## Paper-Cut Microbenchmark Set
 
@@ -168,10 +168,10 @@ reports the runtime decisions; the exact expression lives here to keep the
 main paper compact.
 
 The run script compares dynamic planning against a conservative forced-shuffle
-baseline on the SF1000 PDS-H data set. Generate this data locally before
-running the case study; the generated TPC-H/PDS-H tables are not redistributed
-with the artifact. PDS-H is derived from TPC-H, but these are not official
-TPC-H benchmark results:
+baseline on the SF1000 PDS-H data set. Generate this data locally in the
+benchmark layout before running the case study. The generated PDS-H tables are
+not redistributed with the artifact. PDS-H is derived from TPC-H, but these are
+not official TPC-H benchmark results:
 
 ```sh
 DATA_DIR=/path/to/generated/pdsh/scale-1000 \

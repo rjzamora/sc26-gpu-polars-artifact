@@ -3,9 +3,12 @@ date_selected: 2026-07-16
 
 repositories:
   cudf:
-    url: git@github.com:rjzamora/cudf.git
-    branch: paper-dynamic-planning-overrides
-    commit: 23a2c06a08980fd107a03e04b256a85816f6d668
+    reproduction_url: https://github.com/rapidsai/cudf.git
+    reproduction_commit: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
+    reproduction_patch: experiments/patches/cudf-paper-dynamic-planning-overrides.patch
+    paper_run_url: git@github.com:rjzamora/cudf.git
+    paper_run_branch: paper-dynamic-planning-overrides
+    paper_run_commit: 23a2c06a08980fd107a03e04b256a85816f6d668
     upstream_main_commit_at_merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
   rapidsmpf:
     source: cudf dependency

@@ -4,27 +4,26 @@ This runbook is for collecting paper microbenchmarks on a GPU system such as a
 B200 or H100 node. It assumes this artifact repository and a RAPIDS/cudf
 checkout are available on the same machine.
 
-## Required cudf Branch
+## Required cudf Changes
 
-Use the paper branch:
-
-```sh
-git clone git@github.com:rjzamora/cudf.git cudf
-cd cudf
-git remote add upstream git@github.com:rapidsai/cudf.git
-git fetch origin
-git fetch upstream
-git checkout paper-dynamic-planning-overrides
-```
-
-If that branch is not accessible, clone RAPIDS/cudf, check out the recorded
-upstream commit, and apply the patch included with this artifact:
+Clone RAPIDS/cudf, check out the recorded upstream commit, and apply the patch
+included with this artifact:
 
 ```sh
 git clone https://github.com/rapidsai/cudf.git cudf
 cd cudf
 git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
 git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
+```
+
+The original paper runs were collected from the
+`paper-dynamic-planning-overrides` branch. If that branch is accessible, it may
+be used directly:
+
+```sh
+git clone git@github.com:rjzamora/cudf.git cudf
+cd cudf
+git checkout paper-dynamic-planning-overrides
 ```
 
 For the first B200 paper-cut runs, the local branch was:
@@ -108,6 +107,7 @@ Control the GPU count with `CUDA_VISIBLE_DEVICES`:
 export CUDA_VISIBLE_DEVICES=0
 export CUDA_VISIBLE_DEVICES=0,1
 export CUDA_VISIBLE_DEVICES=0,1,2,3
+export CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7
 ```
 
 The `cpu` strategy uses the Polars CPU streaming engine and ignores
@@ -292,7 +292,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
   --output experiments/results/raw/groupby-high-paper-large-tree-fail-ray4.jsonl
 ```
 
-Repeat the successful cases for 1, 2, and 4 GPUs by changing
+Repeat the successful cases for 1, 2, 4, and 8 GPUs by changing
 `CUDA_VISIBLE_DEVICES`. Record the hardware and software stack before moving raw
 results into paper tables or plots.
 
