@@ -1,0 +1,15 @@
+name: paper-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - make
+  - tectonic=0.15.*
+  - latexmk
+  - pandoc
+  - pygments
+  - matplotlib
+  - pandas
+  - numpy
+

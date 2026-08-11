@@ -1,0 +1,48 @@
+label: b200-paper-cut-initial
+date_selected: 2026-07-16
+
+repositories:
+  cudf:
+    url: git@github.com:rjzamora/cudf.git
+    branch: paper-dynamic-planning-overrides
+    commit: 23a2c06a08980fd107a03e04b256a85816f6d668
+    upstream_main_commit_at_merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
+  rapidsmpf:
+    source: cudf dependency
+    version: "26.8.*,>=0.0.0a0"
+    commit: provided by the cudf checkout
+  polars:
+    version_or_commit: ">=1.35,<1.43"
+
+container:
+  registry: not used for the reported bare-metal conda runs
+  tag: not used for the reported bare-metal conda runs
+  digest: not used for the reported bare-metal conda runs
+  dockerfile: not used for the reported bare-metal conda runs
+
+hardware:
+  system: single-node NVLink-connected B200 system
+  gpu_model: B200
+  gpu_count: 8
+  gpu_memory: 183359 MiB per GPU
+  cpu_model: Intel Xeon Platinum 8570
+  memory: not recorded
+  storage: not recorded
+  interconnect: NVLink
+
+runtime:
+  cuda_version: "13.0"
+  driver_version: "580.82.07"
+  python_version: not recorded
+  rapids_version_label: "26.08 development snapshot"
+  cudf_polars_frontend: ray
+
+experiment_controls:
+  dynamic_planning: true
+  sample_chunk_count: default
+  join_domain_prefilter_enabled: false
+  target_partition_size_for_join_balanced: 268435456
+  forced_strategy_knobs:
+    join: dynamic|broadcast_left|broadcast_right|shuffle
+    groupby: dynamic|tree|shuffle
+    distinct: dynamic|tree|shuffle

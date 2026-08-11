@@ -1,0 +1,21 @@
+# Local/editor noise
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+*~
+.matplotlib-cache/
+
+# Generated benchmark data and local outputs
+experiments/results/raw/
+experiments/results/generated/
+*.parquet
+*.csv
+*.jsonl
+*.log
+
+# Generated archives
+*.zip
+*.tar
+*.tar.gz
