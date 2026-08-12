@@ -23,8 +23,8 @@ commit: 23a2c06a08980fd107a03e04b256a85816f6d668
 upstream/main at merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
 ```
 
-If the branch moves before the final paper run, record the new commit in
-`experiments/env/software-stack.md` and in the JSONL result metadata.
+The experiment-code snapshot is archived at Zenodo DOI
+`10.5281/zenodo.21906536`.
 
 ## Python Environment
 

@@ -13,6 +13,7 @@ This file records the fixed software stack used for paper experiments.
 - reviewer reproduction path: clone https://github.com/rjzamora/cudf.git and
   check out 23a2c06a08980fd107a03e04b256a85816f6d668 from the
   paper-dynamic-planning-overrides branch history
+- experiment-code DOI: 10.5281/zenodo.21906536
 - rapidsmpf repository: cudf dependency
 - rapidsmpf branch: provided by the cudf checkout
 - rapidsmpf commit: provided by the cudf checkout

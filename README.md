@@ -56,8 +56,9 @@ git checkout 23a2c06a08980fd107a03e04b256a85816f6d668
 Then create the NVIDIA/cudf development environment and build the required cudf
 components from the cudf checkout, as described in
 `experiments/env/cudf-polars-benchmark-env.md`.
-The commit is part of the public `paper-dynamic-planning-overrides` branch and
-is also recorded in `experiments/env/software-stack.md`.
+The commit is part of the public `paper-dynamic-planning-overrides` branch, is
+archived at Zenodo DOI `10.5281/zenodo.21906536`, and is also recorded in
+`experiments/env/software-stack.md`.
 
 ## Quick Checks
 

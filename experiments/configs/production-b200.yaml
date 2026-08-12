@@ -6,6 +6,7 @@ repositories:
     reproduction_url: https://github.com/rjzamora/cudf.git
     reproduction_branch: paper-dynamic-planning-overrides
     reproduction_commit: 23a2c06a08980fd107a03e04b256a85816f6d668
+    zenodo_doi: 10.5281/zenodo.21906536
     upstream_main_commit_at_merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
   rapidsmpf:
     source: cudf dependency
