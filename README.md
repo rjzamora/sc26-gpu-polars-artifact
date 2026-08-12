@@ -13,6 +13,8 @@ and exploratory local-machine outputs are not included.
 - `experiments/configs/paper-cut-b200.yaml`: hardware and software pin for the
   B200 paper-cut run.
 - `experiments/env/`: environment and software-stack runbooks.
+- `experiments/data/pdsh-inputs.md`: PDS-H input-generation notes and expected
+  Parquet layout.
 - `experiments/patches/`: patch containing the experiment-only cudf changes
   used for the paper.
 - `experiments/queries/tpch_q9_polars.py`: exact Polars LazyFrame expression
@@ -26,7 +28,9 @@ The synthetic microbenchmark inputs are generated locally by
 `experiments/scripts/run_microbenchmarks.py`.
 The PDS-H Q9 inputs must be generated locally as scale-factor 1000 Parquet
 inputs in the layout expected by the benchmark harness. These generated inputs
-are not redistributed with this artifact.
+are not redistributed with this artifact. See `experiments/data/pdsh-inputs.md`
+for the generator source used in the paper runs and the expected directory
+layout.
 
 PDS-H is derived from TPC-H, but the reported case study is not an official
 audited TPC-H benchmark result.
@@ -40,20 +44,21 @@ conda env create -f environment.yml
 conda activate paper-env
 ```
 
-The benchmark environment is a RAPIDS/cudf development environment that can
+The benchmark environment is an NVIDIA/cudf development environment that can
 import `cudf`, `cudf_polars`, `rapidsmpf`, `ray`, and `polars`.
-Clone RAPIDS/cudf, check out the recorded upstream commit, and apply the
+Clone NVIDIA/cudf, check out the recorded upstream commit, and apply the
 included patch:
 
 ```sh
-git clone https://github.com/rapidsai/cudf.git cudf
+git clone https://github.com/NVIDIA/cudf.git cudf
 cd cudf
 git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
 git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
 ```
 
-Then create the RAPIDS/cudf development environment from the cudf checkout, as
-described in `experiments/env/cudf-polars-benchmark-env.md`.
+Then create the NVIDIA/cudf development environment and build the required cudf
+components from the cudf checkout, as described in
+`experiments/env/cudf-polars-benchmark-env.md`.
 The original paper runs were collected from the
 `paper-dynamic-planning-overrides` branch recorded in
 `experiments/env/software-stack.md`; that branch is provenance, while the patch
@@ -73,7 +78,7 @@ Regenerate the Q9 decision figure from the included decision summary:
 make q9-decisions
 ```
 
-Run a small smoke benchmark from a RAPIDS/cudf environment:
+Run a small smoke benchmark from an NVIDIA/cudf environment:
 
 ```sh
 CUDA_VISIBLE_DEVICES=0 python -m experiments.scripts.run_microbenchmarks \

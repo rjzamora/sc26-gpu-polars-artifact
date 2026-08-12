@@ -3,7 +3,7 @@ date_selected: 2026-07-16
 
 repositories:
   cudf:
-    reproduction_url: https://github.com/rapidsai/cudf.git
+    reproduction_url: https://github.com/NVIDIA/cudf.git
     reproduction_commit: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
     reproduction_patch: experiments/patches/cudf-paper-dynamic-planning-overrides.patch
     paper_run_url: git@github.com:rjzamora/cudf.git

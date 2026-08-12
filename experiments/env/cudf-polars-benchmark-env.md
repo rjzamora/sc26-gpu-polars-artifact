@@ -1,16 +1,16 @@
 # cudf-polars Benchmark Environment
 
 This runbook is for collecting paper microbenchmarks on a GPU system such as a
-B200 or H100 node. It assumes this artifact repository and a RAPIDS/cudf
+B200 or H100 node. It assumes this artifact repository and an NVIDIA/cudf
 checkout are available on the same machine.
 
 ## Required cudf Changes
 
-Clone RAPIDS/cudf, check out the recorded upstream commit, and apply the patch
+Clone NVIDIA/cudf, check out the recorded upstream commit, and apply the patch
 included with this artifact:
 
 ```sh
-git clone https://github.com/rapidsai/cudf.git cudf
+git clone https://github.com/NVIDIA/cudf.git cudf
 cd cudf
 git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
 git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
@@ -39,7 +39,7 @@ If the branch moves before the final paper run, record the new commit in
 
 ## Python Environment
 
-Use a RAPIDS/cudf development environment that can import `cudf`, `pylibcudf`,
+Use an NVIDIA/cudf development environment that can import `cudf`, `pylibcudf`,
 `cudf_polars`, `rapidsmpf`, `ray`, and `polars`. On an internal RAPIDS dev
 machine this may already exist. If creating a new environment from the cudf
 checkout, start from the generated RAPIDS environment file that matches the CUDA
@@ -50,7 +50,16 @@ conda env create -n cudf-polars -f conda/environments/all_cuda-133_arch-x86_64.y
 conda activate cudf-polars
 ```
 
-Then install the local `cudf_polars` package from the selected cudf checkout:
+Build the cudf components needed by the GPU Polars benchmark harness:
+
+```sh
+cd /path/to/cudf
+bash ./build.sh libcudf pylibcudf libcudf_streaming cudf_streaming cudf_polars
+```
+
+Then install the local `cudf_polars` package from the selected cudf checkout if
+the build did not already place the package in editable/development mode for
+your environment:
 
 ```sh
 cd /path/to/cudf/python/cudf_polars

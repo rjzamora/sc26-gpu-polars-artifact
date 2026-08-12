@@ -13,7 +13,7 @@ The first synthetic benchmark harness is:
 - `scripts/plot_microbenchmark_figure.py`: generate the paper microbenchmark figure from one or more JSONL files.
 - `scripts/run_paper_microbenchmarks.sh`: run the paper-cut synthetic benchmark set and regenerate the join/groupby figures.
 
-Run these scripts from an environment with `polars`, `cudf-polars`, and the experiment-only strategy-override changes available. This is usually the RAPIDS/cudf development environment, not the minimal LaTeX `paper-env`.
+Run these scripts from an environment with `polars`, `cudf-polars`, and the experiment-only strategy-override changes available. This is usually the NVIDIA/cudf development environment, not the minimal LaTeX `paper-env`.
 For paper runs, apply the cudf patch included under `experiments/patches/`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/paper-cut-b200.yaml` for the initial B200 software-stack pin.
 GPU runs use `--frontend spmd` by default, which falls back to a single-rank communicator when the script is not launched under `rrun`.
 Use `--frontend ray` to run through `cudf_polars.engine.ray.RayEngine`.
@@ -171,7 +171,8 @@ The run script compares dynamic planning against a conservative forced-shuffle
 baseline on the SF1000 PDS-H data set. Generate this data locally in the
 benchmark layout before running the case study. The generated PDS-H tables are
 not redistributed with the artifact. PDS-H is derived from TPC-H, but these are
-not official TPC-H benchmark results:
+not official TPC-H benchmark results. See `data/pdsh-inputs.md` for the
+generator source used in the paper runs and the expected Parquet layout:
 
 ```sh
 DATA_DIR=/path/to/generated/pdsh/scale-1000 \

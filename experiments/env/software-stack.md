@@ -10,7 +10,7 @@ This file records the fixed software stack used for paper experiments.
 - cudf branch: paper-dynamic-planning-overrides
 - cudf commit: 23a2c06a08980fd107a03e04b256a85816f6d668
 - cudf upstream/main commit at merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
-- reviewer reproduction path: clone https://github.com/rapidsai/cudf.git at
+- reviewer reproduction path: clone https://github.com/NVIDIA/cudf.git at
   commit 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4 and apply
   experiments/patches/cudf-paper-dynamic-planning-overrides.patch
 - rapidsmpf repository: cudf dependency
