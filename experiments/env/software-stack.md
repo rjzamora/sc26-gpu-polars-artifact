@@ -6,13 +6,13 @@ This file records the fixed software stack used for paper experiments.
 
 - Label: b200-production-initial
 - Date selected: 2026-07-16
-- cudf repository: git@github.com:rjzamora/cudf.git
+- cudf repository: https://github.com/rjzamora/cudf.git
 - cudf branch: paper-dynamic-planning-overrides
 - cudf commit: 23a2c06a08980fd107a03e04b256a85816f6d668
 - cudf upstream/main commit at merge: 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
-- reviewer reproduction path: clone https://github.com/NVIDIA/cudf.git at
-  commit 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4 and apply
-  experiments/patches/cudf-paper-dynamic-planning-overrides.patch
+- reviewer reproduction path: clone https://github.com/rjzamora/cudf.git and
+  check out 23a2c06a08980fd107a03e04b256a85816f6d668 from the
+  paper-dynamic-planning-overrides branch history
 - rapidsmpf repository: cudf dependency
 - rapidsmpf branch: provided by the cudf checkout
 - rapidsmpf commit: provided by the cudf checkout

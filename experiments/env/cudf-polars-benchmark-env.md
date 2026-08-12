@@ -6,24 +6,13 @@ checkout are available on the same machine.
 
 ## Required cudf Changes
 
-Clone NVIDIA/cudf, check out the recorded upstream commit, and apply the patch
-included with this artifact:
+Clone the public cudf repository and check out the commit used for the initial
+B200 production runs:
 
 ```sh
-git clone https://github.com/NVIDIA/cudf.git cudf
+git clone --branch paper-dynamic-planning-overrides https://github.com/rjzamora/cudf.git cudf
 cd cudf
-git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
-git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
-```
-
-The original paper runs were collected from the
-`paper-dynamic-planning-overrides` branch. If that branch is accessible, it may
-be used directly:
-
-```sh
-git clone git@github.com:rjzamora/cudf.git cudf
-cd cudf
-git checkout paper-dynamic-planning-overrides
+git checkout 23a2c06a08980fd107a03e04b256a85816f6d668
 ```
 
 For the first B200 production runs, the local branch was:

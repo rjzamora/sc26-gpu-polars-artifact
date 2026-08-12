@@ -14,7 +14,7 @@ The first synthetic benchmark harness is:
 - `scripts/run_paper_microbenchmarks.sh`: run the production synthetic benchmark set and regenerate the join/groupby figures.
 
 Run these scripts from an environment with `polars`, `cudf-polars`, and the experiment-only strategy-override changes available. This is usually the NVIDIA/cudf development environment, not the minimal LaTeX `paper-env`.
-For paper runs, apply the cudf patch included under `experiments/patches/`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/production-b200.yaml` for the initial B200 software-stack pin.
+For paper runs, use the public `paper-dynamic-planning-overrides` cudf branch. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/production-b200.yaml` for the initial B200 software-stack pin.
 GPU runs use `--frontend spmd` by default, which falls back to a single-rank communicator when the script is not launched under `rrun`.
 Use `--frontend ray` to run through `cudf_polars.engine.ray.RayEngine`.
 The `cpu` strategy uses the Polars CPU streaming engine and ignores the GPU frontend setting.

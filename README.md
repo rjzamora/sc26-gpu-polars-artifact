@@ -15,8 +15,6 @@ and exploratory local-machine outputs are not included.
 - `experiments/env/`: environment and software-stack runbooks.
 - `experiments/data/pdsh-inputs.md`: PDS-H input-generation notes and expected
   Parquet layout.
-- `experiments/patches/`: patch containing the experiment-only cudf changes
-  used for the paper.
 - `experiments/queries/tpch_q9_polars.py`: exact Polars LazyFrame expression
   used for the PDS-H Q9 case study.
 - `experiments/results/`: summarized paper results and Q9 decision metadata.
@@ -46,23 +44,20 @@ conda activate paper-env
 
 The benchmark environment is an NVIDIA/cudf development environment that can
 import `cudf`, `cudf_polars`, `rapidsmpf`, `ray`, and `polars`.
-Clone NVIDIA/cudf, check out the recorded upstream commit, and apply the
-included patch:
+Clone the public cudf repository and check out the commit used for the initial
+B200 production runs:
 
 ```sh
-git clone https://github.com/NVIDIA/cudf.git cudf
+git clone --branch paper-dynamic-planning-overrides https://github.com/rjzamora/cudf.git cudf
 cd cudf
-git checkout 5912b8ec9b87c5d9f618e7d02f56c74006a13ed4
-git apply /path/to/sc26-gpu-polars-artifact/experiments/patches/cudf-paper-dynamic-planning-overrides.patch
+git checkout 23a2c06a08980fd107a03e04b256a85816f6d668
 ```
 
 Then create the NVIDIA/cudf development environment and build the required cudf
 components from the cudf checkout, as described in
 `experiments/env/cudf-polars-benchmark-env.md`.
-The original paper runs were collected from the
-`paper-dynamic-planning-overrides` branch recorded in
-`experiments/env/software-stack.md`.
-That branch is provenance, while the patch is the reviewer-facing reproduction path.
+The commit is part of the public `paper-dynamic-planning-overrides` branch and
+is also recorded in `experiments/env/software-stack.md`.
 
 ## Quick Checks
 
@@ -78,11 +73,26 @@ Regenerate the Q9 decision figure from the included decision summary:
 make q9-decisions
 ```
 
-Run a small smoke benchmark from an NVIDIA/cudf environment:
+Run a CPU-only wiring check if you want to verify the artifact scripts before
+using a GPU:
+
+```sh
+python -m experiments.scripts.run_microbenchmarks \
+  --preset smoke \
+  --case groupby-low-cardinality \
+  --strategies cpu \
+  --iterations 1 \
+  --warmup 0 \
+  --output experiments/results/raw/smoke-cpu.jsonl \
+  --cudf-repo /path/to/cudf
+```
+
+Run a small GPU smoke benchmark from an NVIDIA/cudf environment. The single-rank
+SPMD frontend avoids local Ray startup and is sufficient for this smoke test:
 
 ```sh
 CUDA_VISIBLE_DEVICES=0 python -m experiments.scripts.run_microbenchmarks \
-  --frontend ray \
+  --frontend spmd \
   --preset smoke \
   --case join-small-build,groupby-low-cardinality \
   --strategies dynamic \
