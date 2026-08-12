@@ -11,10 +11,10 @@ The first synthetic benchmark harness is:
 - `scripts/run_microbenchmarks.py`: generate/reuse partitioned Parquet inputs and run join, groupby, and distinct query shapes.
 - `scripts/summarize_microbenchmarks.py`: summarize JSONL output into a Markdown table.
 - `scripts/plot_microbenchmark_figure.py`: generate the paper microbenchmark figure from one or more JSONL files.
-- `scripts/run_paper_microbenchmarks.sh`: run the paper-cut synthetic benchmark set and regenerate the join/groupby figures.
+- `scripts/run_paper_microbenchmarks.sh`: run the production synthetic benchmark set and regenerate the join/groupby figures.
 
 Run these scripts from an environment with `polars`, `cudf-polars`, and the experiment-only strategy-override changes available. This is usually the NVIDIA/cudf development environment, not the minimal LaTeX `paper-env`.
-For paper runs, apply the cudf patch included under `experiments/patches/`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/paper-cut-b200.yaml` for the initial B200 software-stack pin.
+For paper runs, apply the cudf patch included under `experiments/patches/`. See `env/cudf-polars-benchmark-env.md` for the environment runbook and `configs/production-b200.yaml` for the initial B200 software-stack pin.
 GPU runs use `--frontend spmd` by default, which falls back to a single-rank communicator when the script is not launched under `rrun`.
 Use `--frontend ray` to run through `cudf_polars.engine.ray.RayEngine`.
 The `cpu` strategy uses the Polars CPU streaming engine and ignores the GPU frontend setting.
@@ -95,7 +95,7 @@ Once the cases look right, repeat with `--preset paper-large`. The `paper-large`
 preset uses 1B-row synthetic inputs for the main side of each benchmark. It is
 intended for final numbers on 1, 2, 4, and 8 GPUs, not quick iteration.
 
-## Paper-Cut Microbenchmark Set
+## Production Microbenchmark Set
 
 Keep the main paper focused on one broadcast-favored join, one shuffle-favored
 join, one tree-favored groupby, and one shuffle-favored groupby.
@@ -164,7 +164,7 @@ iterations in the same Python process may not be representative.
 
 The Q9 case study uses the Polars expression in
 `queries/tpch_q9_polars.py`. The paper text describes the query shape and
-reports the runtime decisions; the exact expression lives here to keep the
+reports the runtime decisions. The exact expression lives here to keep the
 main paper compact.
 
 The run script compares dynamic planning against a conservative forced-shuffle

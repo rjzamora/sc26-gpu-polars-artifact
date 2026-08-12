@@ -103,7 +103,7 @@ PRESETS: dict[str, Preset] = {
 CASES: dict[str, Case] = {
     "groupby-low-cardinality": Case(
         benchmark="groupby",
-        description="Large input with compact groupby output; tree should be viable.",
+        description="Large input with compact groupby output, where tree should be viable.",
         strategies=("dynamic", "tree", "shuffle"),
     ),
     "groupby-mid-cardinality": Case(
@@ -113,32 +113,32 @@ CASES: dict[str, Case] = {
     ),
     "groupby-high-cardinality": Case(
         benchmark="groupby",
-        description="High-cardinality groupby output; shuffle should be favored.",
+        description="High-cardinality groupby output, where shuffle should be favored.",
         strategies=("dynamic", "shuffle", "tree"),
     ),
     "distinct-low-cardinality": Case(
         benchmark="distinct",
-        description="Large input with compact distinct output; tree should be viable.",
+        description="Large input with compact distinct output, where tree should be viable.",
         strategies=("dynamic", "tree", "shuffle"),
     ),
     "distinct-high-cardinality": Case(
         benchmark="distinct",
-        description="High-cardinality distinct output; shuffle should be favored.",
+        description="High-cardinality distinct output, where shuffle should be favored.",
         strategies=("dynamic", "shuffle", "tree"),
     ),
     "join-tiny-build": Case(
         benchmark="join",
-        description="Large probe side and tiny build side; broadcast should win.",
+        description="Large probe side and tiny build side, where broadcast should win.",
         strategies=("dynamic", "broadcast_right", "shuffle"),
     ),
     "join-small-build": Case(
         benchmark="join",
-        description="Large probe side and small build side; broadcast should win.",
+        description="Large probe side and small build side, where broadcast should win.",
         strategies=("dynamic", "broadcast_right", "shuffle"),
     ),
     "join-balanced": Case(
         benchmark="join",
-        description="Both join sides large; shuffle should win.",
+        description="Both join sides large, where shuffle should win.",
         strategies=("dynamic", "shuffle"),
     ),
 }

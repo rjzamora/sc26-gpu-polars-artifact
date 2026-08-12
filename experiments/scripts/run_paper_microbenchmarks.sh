@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Run the paper-cut microbenchmarks and regenerate the paper figures.
+# Run the production microbenchmarks and regenerate the paper figures.
 
 set -euo pipefail
 
@@ -50,7 +50,7 @@ groupby_low="$RAW_DIR/groupby-low-${PRESET}-${GPU_LABEL}.jsonl"
 groupby_high_success="$RAW_DIR/groupby-high-${PRESET}-success-${GPU_LABEL}.jsonl"
 groupby_high_tree_fail="$RAW_DIR/groupby-high-${PRESET}-tree-fail-${GPU_LABEL}.jsonl"
 
-echo "Running paper-cut microbenchmarks with CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+echo "Running production microbenchmarks with CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 echo "Preset=$PRESET frontend=$FRONTEND iterations=$ITERATIONS warmup=$WARMUP"
 
 run_benchmark \

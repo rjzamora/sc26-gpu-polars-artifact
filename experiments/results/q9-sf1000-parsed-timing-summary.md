@@ -1,6 +1,6 @@
 # PDS-H Q9 Parsed Timing Summary
 
-All runs use iteration 0 as a cache warmup; hot timings report iterations greater than 0.
+All runs use iteration 0 as a cache warmup. Hot timings report iterations greater than 0.
 
 | GPUs | Strategy | Warmup (s) | Hot median (s) | Hot mean (s) | Hot values (s) | Source |
 |---:|---|---:|---:|---:|---|---|

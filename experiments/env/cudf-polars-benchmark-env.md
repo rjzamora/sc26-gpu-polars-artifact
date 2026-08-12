@@ -26,7 +26,7 @@ cd cudf
 git checkout paper-dynamic-planning-overrides
 ```
 
-For the first B200 paper-cut runs, the local branch was:
+For the first B200 production runs, the local branch was:
 
 ```text
 branch: paper-dynamic-planning-overrides
@@ -148,7 +148,7 @@ python -m experiments.scripts.summarize_microbenchmarks \
 ## Quick End-to-End Figure Validation
 
 Use this `medium` run to validate the benchmark and plotting path. Prefer four
-GPUs when available because it also checks the multi-rank join path; use
+GPUs when available because it also checks the multi-rank join path. Use
 `CUDA_VISIBLE_DEVICES=0` only as a lighter sanity check. This is a wiring check,
 not final paper data.
 
@@ -201,7 +201,7 @@ Use `paper-large` for final synthetic results. Run expected-failure strategies i
 separate processes because a CUDA OOM can affect later iterations in the same
 Python process.
 
-For the final paper-cut microbenchmark sweep, prefer the driver script:
+For the final production microbenchmark sweep, prefer the driver script:
 
 ```sh
 conda activate cudf-polars

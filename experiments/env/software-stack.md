@@ -2,9 +2,9 @@
 
 This file records the fixed software stack used for paper experiments.
 
-## Primary Paper Cut
+## Primary Production Run
 
-- Label: b200-paper-cut-initial
+- Label: b200-production-initial
 - Date selected: 2026-07-16
 - cudf repository: git@github.com:rjzamora/cudf.git
 - cudf branch: paper-dynamic-planning-overrides

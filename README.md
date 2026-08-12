@@ -10,8 +10,8 @@ and exploratory local-machine outputs are not included.
 ## Contents
 
 - `experiments/scripts/`: benchmark, plotting, and case-study scripts.
-- `experiments/configs/paper-cut-b200.yaml`: hardware and software pin for the
-  B200 paper-cut run.
+- `experiments/configs/production-b200.yaml`: hardware and software pin for the
+  B200 production run.
 - `experiments/env/`: environment and software-stack runbooks.
 - `experiments/data/pdsh-inputs.md`: PDS-H input-generation notes and expected
   Parquet layout.
@@ -61,8 +61,8 @@ components from the cudf checkout, as described in
 `experiments/env/cudf-polars-benchmark-env.md`.
 The original paper runs were collected from the
 `paper-dynamic-planning-overrides` branch recorded in
-`experiments/env/software-stack.md`; that branch is provenance, while the patch
-is the reviewer-facing reproduction path.
+`experiments/env/software-stack.md`.
+That branch is provenance, while the patch is the reviewer-facing reproduction path.
 
 ## Quick Checks
 
@@ -92,9 +92,9 @@ CUDA_VISIBLE_DEVICES=0 python -m experiments.scripts.run_microbenchmarks \
   --cudf-repo /path/to/cudf
 ```
 
-## Paper-Cut Runs
+## Production Runs
 
-The full paper-cut synthetic benchmark sweep is driven by:
+The full production synthetic benchmark sweep is driven by:
 
 ```sh
 GPU_DEVICES=0,1,2,3 \
