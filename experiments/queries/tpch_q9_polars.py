@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 """PDS-H Q9 expressed with the Polars LazyFrame API.
 
 This query is the case-study workload used in the paper. PDS-H is derived from

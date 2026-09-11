@@ -1,8 +1,6 @@
 # Experiments
 
-This directory tracks the scripts, configs, and summarized results used by the paper.
-
-Suggested rule: every figure or table in the paper should point back to a script/config pair here.
+This directory tracks the scripts, configs, and summarized results used by the paper. Paper figures and tables are backed by the scripts, configuration records, and result summaries in this directory.
 
 ## Dynamic-Planning Microbenchmarks
 
@@ -182,7 +180,7 @@ RRUN=rrun \
 experiments/scripts/run_q9_case_study.sh
 ```
 
-The script writes raw local-machine output under `experiments/results/raw/q9/`
+The script writes raw benchmark output under `experiments/results/raw/q9/`
 and regenerates:
 
 - `paper/figures/q9-performance.pdf`

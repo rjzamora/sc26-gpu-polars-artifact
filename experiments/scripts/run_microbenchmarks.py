@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+# SPDX-FileCopyrightText: Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# SPDX-License-Identifier: Apache-2.0
+
 """Run simple dynamic-planning microbenchmarks for the paper.
 
 The benchmark inputs are synthetic Parquet shards. Keeping the data in Parquet

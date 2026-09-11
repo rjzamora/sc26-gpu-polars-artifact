@@ -1,8 +1,8 @@
 # cudf-polars Benchmark Environment
 
 This runbook is for collecting paper microbenchmarks on a GPU system such as a
-B200 or H100 node. It assumes this artifact repository and an NVIDIA/cudf
-checkout are available on the same machine.
+B200 or H100 system. It assumes this artifact repository and an NVIDIA/cudf
+checkout are available in the same software environment.
 
 ## Required cudf Changes
 
@@ -15,7 +15,7 @@ cd cudf
 git checkout 23a2c06a08980fd107a03e04b256a85816f6d668
 ```
 
-For the first B200 production runs, the local branch was:
+For the first B200 production runs, the selected cudf revision was:
 
 ```text
 branch: paper-dynamic-planning-overrides
@@ -29,10 +29,10 @@ The experiment-code snapshot is archived at Zenodo DOI
 ## Python Environment
 
 Use an NVIDIA/cudf development environment that can import `cudf`, `pylibcudf`,
-`cudf_polars`, `rapidsmpf`, `ray`, and `polars`. On an internal RAPIDS dev
-machine this may already exist. If creating a new environment from the cudf
+`cudf_polars`, `rapidsmpf`, `ray`, and `polars`. If an equivalent environment
+already exists, it can be reused. If creating a new environment from the cudf
 checkout, start from the generated RAPIDS environment file that matches the CUDA
-stack on the target machine, for example:
+stack used for reproduction, for example:
 
 ```sh
 conda env create -n cudf-polars -f conda/environments/all_cuda-133_arch-x86_64.yaml

@@ -5,7 +5,7 @@ This repository contains the artifact package for the PDSW 2026 paper
 
 This repository contains the scripts, configuration records, summarized results,
 and generated figures used for the paper evaluation. Generated input datasets
-and exploratory local-machine outputs are not included.
+and exploratory outputs are not included.
 
 ## Contents
 

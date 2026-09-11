@@ -21,6 +21,9 @@ This file records the fixed software stack used for paper experiments.
 - RAPIDS base image: not used for the reported bare-metal conda runs
 - Container image tag: not used for the reported bare-metal conda runs
 - Container image digest: not used for the reported bare-metal conda runs
+- Operating system: Ubuntu 24.04.3 LTS
+- Kernel: Linux 6.8.0-79-generic
+- Python version: 3.13.14
 - CUDA version: 13.0
 - Driver version: 580.82.07
 

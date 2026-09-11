@@ -22,19 +22,38 @@ container:
   dockerfile: not used for the reported bare-metal conda runs
 
 hardware:
-  system: single-node NVLink-connected B200 system
+  system: single-node NVIDIA DGXB200 system
   gpu_model: B200
   gpu_count: 8
   gpu_memory: 183359 MiB per GPU
   cpu_model: Intel Xeon Platinum 8570
-  memory: not recorded
-  storage: not recorded
+  cpu_count: 2
+  cpu_cores: 112
+  cpu_threads: 224
+  memory: 2113450584 KiB
+  storage:
+    synthetic_microbenchmarks:
+      input_path: experiments/results/generated/microbenchmarks
+      filesystem: ext4
+      source: /dev/sdb1
+      mount_point: /raid
+      capacity: 7.0T
+      mount_options: rw,relatime,stripe=256
+      note: generated locally under the artifact working directory on a local ext4 filesystem
+    pdsh_q9:
+      input_path: generated PDS-H SF1000 Parquet directory
+      filesystem: nfs
+      capacity: 120T
+      q9_io_mode: hot
+      note: generated locally and read from an NFS-mounted dataset filesystem
   interconnect: NVLink
 
 runtime:
+  operating_system: Ubuntu 24.04.3 LTS
+  kernel: 6.8.0-79-generic
   cuda_version: "13.0"
   driver_version: "580.82.07"
-  python_version: not recorded
+  python_version: 3.13.14
   rapids_version_label: "26.08 development snapshot"
   cudf_polars_frontend: ray
 

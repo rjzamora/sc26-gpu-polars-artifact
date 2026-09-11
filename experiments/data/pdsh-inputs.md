@@ -51,5 +51,4 @@ DATA_DIR=/path/to/generated/pdsh/scale-1000 \
 experiments/scripts/run_q9_case_study.sh
 ```
 
-PDS-H is derived from TPC-H, but these are not official audited TPC-H benchmark
-results.
+PDS-H is derived from TPC-H, but these are not official audited TPC-H benchmark results. Since these inputs are generated locally, exact file and row-group layout may vary across reproductions. The expected reproduction target is the qualitative dynamic-planning behavior and performance trend, not bitwise-identical timings.
