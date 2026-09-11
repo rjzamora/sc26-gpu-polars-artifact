@@ -149,8 +149,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
   --strategies default \
   --iterations 2 \
   --warmup 1 \
-  --output experiments/results/raw/fig5-v100-validation-join-ray4.jsonl \
-  --data-dir experiments/results/generated/fig5-v100-validation-ray4 \
+  --output experiments/results/raw/medium-validation-join-ray4.jsonl \
+  --data-dir experiments/results/generated/medium-validation-ray4 \
   --regenerate
 
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
@@ -160,8 +160,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m experiments.scripts.run_microbenchmarks \
   --strategies default \
   --iterations 2 \
   --warmup 1 \
-  --output experiments/results/raw/fig5-v100-validation-groupby-ray4.jsonl \
-  --data-dir experiments/results/generated/fig5-v100-validation-ray4
+  --output experiments/results/raw/medium-validation-groupby-ray4.jsonl \
+  --data-dir experiments/results/generated/medium-validation-ray4
 ```
 
 Generate the microbenchmark figures from those validation results:
@@ -170,17 +170,17 @@ Generate the microbenchmark figures from those validation results:
 conda activate paper-env
 
 python experiments/scripts/plot_microbenchmark_figure.py \
-  experiments/results/raw/fig5-v100-validation-join-ray4.jsonl \
+  experiments/results/raw/medium-validation-join-ray4.jsonl \
   --benchmark join \
   --output paper/figures/join-microbenchmark-results.pdf \
-  --summary-output experiments/results/fig5-v100-validation-join-ray4.md \
+  --summary-output experiments/results/medium-validation-join-ray4.md \
   --title "Medium validation, 4 GPUs"
 
 python experiments/scripts/plot_microbenchmark_figure.py \
-  experiments/results/raw/fig5-v100-validation-groupby-ray4.jsonl \
+  experiments/results/raw/medium-validation-groupby-ray4.jsonl \
   --benchmark groupby \
   --output paper/figures/groupby-microbenchmark-results.pdf \
-  --summary-output experiments/results/fig5-v100-validation-groupby-ray4.md \
+  --summary-output experiments/results/medium-validation-groupby-ray4.md \
   --title "Medium validation, 4 GPUs"
 ```
 

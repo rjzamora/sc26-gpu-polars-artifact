@@ -29,7 +29,7 @@ This file records the fixed software stack used for paper experiments.
 
 ## Notes
 
-- Prefer an immutable commit SHA and container digest over branch names or mutable tags.
-- Use "RAPIDS 26.08 development snapshot" in the paper until the exact release artifact is available and verified.
-- Keep experiment-only strategy knobs on a clearly named paper branch.
-- Disable or avoid optimizer passes that are not part of the dynamic-planning story.
+- The commit SHA and Zenodo DOI above identify the experiment code used for the reported runs.
+- The reported runs used a RAPIDS 26.08 development snapshot from the selected cudf checkout, not a container image.
+- The experiment branch contains the strategy-override knobs needed to compare dynamic decisions with forced alternatives.
+- Optimizer passes outside the dynamic-planning mechanism were disabled for the reported experiments when applicable.
